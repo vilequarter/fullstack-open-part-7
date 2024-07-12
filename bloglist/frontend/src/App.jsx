@@ -6,11 +6,13 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import CreateBlogForm from './components/CreateBlogForm'
 import Toggleable from './components/Toggleable'
+import { useDispatch, useSelector } from 'react-redux'
+import { notification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const notificationDispatch = useDispatch()
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
@@ -41,13 +43,7 @@ const App = () => {
         username, password,
       })
       blogService.setToken(user.token)
-      setNotification([
-        `${username} logged in successfully`,
-        false
-      ])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification(`${username} logged in successfully`, 5, 'success'))
       setUser(user)
 
       loginFormRef.current.toggleVisibility()
@@ -56,10 +52,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
     } catch(exception) {
-      setNotification(['Invalid username or password', true])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification('Invalid username or password', 5, 'error'))
     }
   }
 
@@ -72,37 +65,25 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       await blogService.create(newBlog)
-      setNotification([
-        `Blog ${newBlog.title} by ${newBlog.author} created`,
-        false
-      ])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification(`Blog '${newBlog.title}' by ${newBlog.author} created`, 5, 'success'))
       const newBlogs = await blogService.getAll()
       newBlogs.sort((a, b) => b.likes - a.likes)
       setBlogs(newBlogs)
 
     } catch(exception) {
-      setNotification(['Unable to add blog', true])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification('Unable to add blog', 5, 'error'))
     }
   }
 
   const handleUpdate = async (newBlog) => {
     try {
       await blogService.update(newBlog.id, newBlog)
-      //notification?
+      notificationDispatch(notification(`You upvoted ${newBlog.title}`, 5, 'success'))
       const newBlogs = await blogService.getAll()
       newBlogs.sort((a, b) => b.likes - a.likes)
       setBlogs(newBlogs)
     } catch(exception) {
-      setNotification(['Unable to update blog', true])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification('Unable to update blog', 5, 'error'))
     }
   }
 
@@ -112,25 +93,16 @@ const App = () => {
       const newBlogs = await blogService.getAll()
       newBlogs.sort((a, b) => b.likes - a.likes)
       setBlogs(newBlogs)
-      setNotification([
-        `Blog "${blog.title}" deleted`,
-        false
-      ])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification(`Blog '${blog.title}' deleted`, 5, 'success'))
     } catch(exception) {
-      setNotification(['Unable to delete blog', true])
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      notificationDispatch(notification('Unable to delete blog', 5, 'error'))
     }
   }
 
   return (
     <div>
 
-      <Notification message={notification} />
+      <Notification />
 
       <div style={{ display: user === null ? '' : 'none' }}>
         <Toggleable
