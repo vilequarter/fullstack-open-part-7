@@ -7,7 +7,6 @@ const Notification = () => {
     return null
   }
 
-  //adjust className for success/failure
   return (
     <div className={notification.type}>
       {notification.content}

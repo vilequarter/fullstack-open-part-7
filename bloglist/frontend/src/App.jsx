@@ -6,24 +6,21 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import CreateBlogForm from './components/CreateBlogForm'
 import Toggleable from './components/Toggleable'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const notificationDispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
 
   useEffect(() => {
-    const get = async () => {
-      const blogs = await blogService.getAll()
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogs)
-    }
-    get()
+    dispatch(initializeBlogs())
   }, [])
 
   useEffect(() => {
@@ -43,7 +40,7 @@ const App = () => {
         username, password,
       })
       blogService.setToken(user.token)
-      notificationDispatch(notification(`${username} logged in successfully`, 5, 'success'))
+      dispatch(notification(`${username} logged in successfully`, 5, 'success'))
       setUser(user)
 
       loginFormRef.current.toggleVisibility()
@@ -52,7 +49,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
     } catch(exception) {
-      notificationDispatch(notification('Invalid username or password', 5, 'error'))
+      dispatch(notification('Invalid username or password', 5, 'error'))
     }
   }
 
@@ -61,42 +58,8 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      blogFormRef.current.toggleVisibility()
-      await blogService.create(newBlog)
-      notificationDispatch(notification(`Blog '${newBlog.title}' by ${newBlog.author} created`, 5, 'success'))
-      const newBlogs = await blogService.getAll()
-      newBlogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(newBlogs)
-
-    } catch(exception) {
-      notificationDispatch(notification('Unable to add blog', 5, 'error'))
-    }
-  }
-
-  const handleUpdate = async (newBlog) => {
-    try {
-      await blogService.update(newBlog.id, newBlog)
-      notificationDispatch(notification(`You upvoted ${newBlog.title}`, 5, 'success'))
-      const newBlogs = await blogService.getAll()
-      newBlogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(newBlogs)
-    } catch(exception) {
-      notificationDispatch(notification('Unable to update blog', 5, 'error'))
-    }
-  }
-
-  const handleRemove = async (blog) => {
-    try {
-      await blogService.remove(blog.id)
-      const newBlogs = await blogService.getAll()
-      newBlogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(newBlogs)
-      notificationDispatch(notification(`Blog '${blog.title}' deleted`, 5, 'success'))
-    } catch(exception) {
-      notificationDispatch(notification('Unable to delete blog', 5, 'error'))
-    }
+  const handleToggle = (ref) => {
+    ref.current.toggleVisibility()
   }
 
   return (
@@ -127,22 +90,12 @@ const App = () => {
       <h2>Blogs</h2>
       <Toggleable buttonLabel="add blog" ref={blogFormRef}>
         <CreateBlogForm
-          handleCreateBlog={handleCreateBlog}
+          handleToggle={() => handleToggle(blogFormRef)}
           default={false}
         />
       </Toggleable>
       <br/>
-      <div data-testid='blogList'>
-        {blogs.map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleUpdate={handleUpdate}
-            handleRemove={handleRemove}
-            loggedUser={user}
-          />
-        )}
-      </div>
+      <BlogList loggedUser={user} />
     </div>
   )
 }
