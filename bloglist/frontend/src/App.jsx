@@ -1,20 +1,17 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
-import loginService from './services/login'
 import Notification from './components/Notification'
 import CreateBlogForm from './components/CreateBlogForm'
 import Toggleable from './components/Toggleable'
-import { useDispatch } from 'react-redux'
-import { notification } from './reducers/notificationReducer'
+import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
+import { resetUser, setUser } from './reducers/userReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
@@ -30,31 +27,12 @@ const App = () => {
     if(loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
     }
   }, [])
 
-  const handleLogin = async (username, password) => {
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-      blogService.setToken(user.token)
-      dispatch(notification(`${username} logged in successfully`, 5, 'success'))
-      setUser(user)
-
-      loginFormRef.current.toggleVisibility()
-
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-    } catch(exception) {
-      dispatch(notification('Invalid username or password', 5, 'error'))
-    }
-  }
-
   const handleLogout = () => {
-    setUser(null)
+    dispatch(resetUser())
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
@@ -74,7 +52,7 @@ const App = () => {
           default={true}
         >
           <LoginForm
-            handleLogin={handleLogin}
+            handleToggle={() => handleToggle(loginFormRef)}
           />
         </Toggleable>
       </div>
