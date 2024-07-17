@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { update, deleteBlog } from '../reducers/blogReducer'
-import { notification } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, loggedUser }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
@@ -15,13 +14,11 @@ const Blog = ({ blog, loggedUser }) => {
   const addLike = () => {
     const newBlog = { ...blog, likes: blog.likes + 1 }
     dispatch(update(blog.id, newBlog))
-    dispatch(notification(`You liked '${blog.title}'`, 5, 'success'))
   }
 
   const remove = () => {
     if(window.confirm(`Delete blog "${blog.title}"?`)){
-      dispatch(deleteBlog(blog.id))
-      dispatch(notification(`You deleted '${blog.title}'`, 5, 'success'))
+      dispatch(deleteBlog(blog))
     }
   }
 

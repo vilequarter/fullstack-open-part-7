@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
-import { notification } from '../reducers/notificationReducer'
 
 const CreateBlogForm = ({ handleToggle }) => {
   const [title, setTitle] = useState('')
@@ -19,7 +18,6 @@ const CreateBlogForm = ({ handleToggle }) => {
       author: author,
       url: url
     }))
-    dispatch(notification(`You created '${title}'`, 5, 'success'))
 
     setTitle('')
     setAuthor('')
