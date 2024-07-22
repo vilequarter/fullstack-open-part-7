@@ -9,13 +9,15 @@ import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import { resetLoggedUser, setLoggedUser } from './reducers/loggedUserReducer'
 import Menu from './components/Menu'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useMatch } from 'react-router-dom'
 import Users from './components/users'
+import User from './components/User'
 import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.loggedUser)
+  const users = useSelector(state => state.users)
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
@@ -44,6 +46,11 @@ const App = () => {
   const handleToggle = (ref) => {
     ref.current.toggleVisibility()
   }
+
+  const userMatch = useMatch('/users/:id')
+  const userDetail = userMatch
+    ? users.find(user => user.id === userMatch.params.id)
+    : null
 
   return (
     <div>
@@ -74,6 +81,7 @@ const App = () => {
 
       <Routes>
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User user={userDetail}/>} />
         <Route path="/" element={
           <div>
             <h2>Blogs</h2>
