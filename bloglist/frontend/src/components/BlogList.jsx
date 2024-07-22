@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 
-const BlogList = ({ loggedUser }) => {
+const BlogList = () => {
   const blogs = useSelector(state => {
     return state.blogs
   })
@@ -9,7 +9,15 @@ const BlogList = ({ loggedUser }) => {
   return(
     <div>
       {blogs.map((blog) => {
-        if(blog) return <Blog blog={blog} loggedUser={loggedUser} key={blog.id}/>
+        if(blog){
+          return (
+            <div key={blog.id} className="blog">
+              <Link to={`blogs/${blog.id}`}>
+                {blog.title}
+              </Link>
+            </div>
+          )
+        }
       })}
     </div>
   )

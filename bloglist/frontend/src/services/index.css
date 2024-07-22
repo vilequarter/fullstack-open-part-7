@@ -21,7 +21,8 @@
 .blog {
   padding-top: 10px;
   padding-left: 2px;
+  padding-bottom: 10px;
   border: solid;
-  border-width: 1px;
+  border-width: 2px;
   margin-bottom: 5px;
 }

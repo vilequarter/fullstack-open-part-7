@@ -7,6 +7,7 @@ import Toggleable from './components/Toggleable'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import { resetLoggedUser, setLoggedUser } from './reducers/loggedUserReducer'
 import Menu from './components/Menu'
 import { Route, Routes, useMatch } from 'react-router-dom'
@@ -18,6 +19,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.loggedUser)
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
@@ -52,6 +54,11 @@ const App = () => {
     ? users.find(user => user.id === userMatch.params.id)
     : null
 
+  const blogMatch = useMatch('/blogs/:id')
+  const blogDetail = blogMatch
+    ? blogs.find(blog => blog.id === blogMatch.params.id)
+    : null
+
   return (
     <div>
 
@@ -82,6 +89,7 @@ const App = () => {
       <Routes>
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User user={userDetail}/>} />
+        <Route path="/blogs/:id" element={<Blog blog={blogDetail}/>} />
         <Route path="/" element={
           <div>
             <h2>Blogs</h2>
@@ -92,7 +100,7 @@ const App = () => {
               />
             </Toggleable>
             <br/>
-            <BlogList loggedUser={user} />
+            <BlogList/>
           </div>
         } />
       </Routes>

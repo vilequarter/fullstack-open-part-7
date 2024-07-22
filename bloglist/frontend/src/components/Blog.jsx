@@ -1,15 +1,10 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { update, deleteBlog } from '../reducers/blogReducer'
+import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, loggedUser }) => {
-  const [detailsVisible, setDetailsVisible] = useState(false)
-
+const Blog = ({ blog }) => {
+  const loggedUser = useSelector(state => state.loggedUser)
   const dispatch = useDispatch()
-
-  const toggleVisibility = () => {
-    setDetailsVisible(!detailsVisible)
-  }
 
   const addLike = () => {
     const newBlog = { ...blog, likes: blog.likes + 1 }
@@ -23,31 +18,23 @@ const Blog = ({ blog, loggedUser }) => {
   }
 
   return(
-    <div className="blog">
-      {blog.title} {blog.author}
-      <button onClick={toggleVisibility}>
-        {detailsVisible ? 'hide' : 'view'}
-      </button>
-      <div
-        style={{ display: detailsVisible ? '' : 'none' }}
-        className='toggleableContent'
-      >
-        <div>{blog.url}</div>
-        <div>Likes: <div data-testid='likes'>{blog.likes}</div>
-          <button
-            onClick={addLike}
-            id='likeButton'>
-              Like
-          </button>
-        </div>
-        <div>{blog.user ? blog.user.name : ''}</div>
+    <div>
+      <h2>{blog.title}</h2>
+      <Link to={blog.url}>{blog.url}</Link>
+      <div>Likes: <span data-testid='likes'>{blog.likes} </span>
         <button
-          onClick={remove}
-          style={{ display: loggedUser && loggedUser.username === blog.user.username ? '' : 'none' }}
-        >
-          Delete
+          onClick={addLike}
+          id='likeButton'>
+            Like
         </button>
       </div>
+      <div>Added by {blog.user.name}</div>
+      <button
+        onClick={remove}
+        style={{ display: loggedUser && loggedUser.username === blog.user.username ? '' : 'none' }}
+      >
+        Delete
+      </button>
     </div>
   )
 }
