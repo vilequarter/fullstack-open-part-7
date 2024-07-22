@@ -59,5 +59,15 @@ export const deleteBlog = (blog) => {
   }
 }
 
+export const createComment = (blog, comment) => {
+  return async dispatch => {
+    const newBlog = { ...blog, comments: blog.comments.concat(comment) }
+    const id = blog.id
+    await blogService.update(id, newBlog)
+    dispatch(updateBlog({ id, newBlog }))
+    dispatch(notification(`You commented '${comment.content}' on ${blog.title}`, 5, 'success'))
+  }
+}
+
 export const { appendBlog, updateBlog, setBlogs, removeBlog } = blogSlice.actions
 export default blogSlice.reducer

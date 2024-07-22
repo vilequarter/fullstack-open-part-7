@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { update, deleteBlog } from '../reducers/blogReducer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import Comments from './Comments'
 
 const Blog = ({ blog }) => {
   const loggedUser = useSelector(state => state.loggedUser)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const addLike = () => {
     const newBlog = { ...blog, likes: blog.likes + 1 }
@@ -13,9 +15,12 @@ const Blog = ({ blog }) => {
 
   const remove = () => {
     if(window.confirm(`Delete blog "${blog.title}"?`)){
+      navigate('/')
       dispatch(deleteBlog(blog))
     }
   }
+
+  if(!blog) return null
 
   return(
     <div>
@@ -35,6 +40,7 @@ const Blog = ({ blog }) => {
       >
         Delete
       </button>
+      <Comments blog={blog} />
     </div>
   )
 }

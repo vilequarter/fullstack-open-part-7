@@ -27,6 +27,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
       url: request.body.url,
       likes: request.body.likes || 0,
       user: user._id,
+      comments: [],
     });
   
     if(blog.title === undefined || blog.author === undefined){
@@ -73,6 +74,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
       url: request.body.url,
       likes: request.body.likes,
       user: request.body.user.id,
+      comments: request.body.comments,
     };
     const result = await Blog.findByIdAndUpdate(
       request.params.id,
