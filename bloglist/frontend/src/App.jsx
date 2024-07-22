@@ -7,17 +7,22 @@ import Toggleable from './components/Toggleable'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
-import { resetUser, setUser } from './reducers/userReducer'
+import { resetLoggedUser, setLoggedUser } from './reducers/loggedUserReducer'
+import Menu from './components/Menu'
+import { Route, Routes } from 'react-router-dom'
+import Users from './components/users'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.loggedUser)
 
   const loginFormRef = useRef()
   const blogFormRef = useRef()
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
   useEffect(() => {
@@ -27,12 +32,12 @@ const App = () => {
     if(loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       blogService.setToken(user.token)
-      dispatch(setUser(user))
+      dispatch(setLoggedUser(user))
     }
   }, [])
 
   const handleLogout = () => {
-    dispatch(resetUser())
+    dispatch(resetLoggedUser())
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
@@ -42,6 +47,8 @@ const App = () => {
 
   return (
     <div>
+
+      <Menu />
 
       <Notification />
 
@@ -65,15 +72,24 @@ const App = () => {
         : <></>
       }
 
-      <h2>Blogs</h2>
-      <Toggleable buttonLabel="add blog" ref={blogFormRef}>
-        <CreateBlogForm
-          handleToggle={() => handleToggle(blogFormRef)}
-          default={false}
-        />
-      </Toggleable>
-      <br/>
-      <BlogList loggedUser={user} />
+      <Routes>
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={
+          <div>
+            <h2>Blogs</h2>
+            <Toggleable buttonLabel="add blog" ref={blogFormRef}>
+              <CreateBlogForm
+                handleToggle={() => handleToggle(blogFormRef)}
+                default={false}
+              />
+            </Toggleable>
+            <br/>
+            <BlogList loggedUser={user} />
+          </div>
+        } />
+      </Routes>
+
+
     </div>
   )
 }
