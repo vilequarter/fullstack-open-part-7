@@ -5,10 +5,14 @@ const Menu = () => {
     paddingRight: 5
   }
 
+  const background = {
+    backgroundColor: 'lightgray'
+  }
+
   return (
-    <div>
-      <Link style={padding} to="/">Home</Link>
-      <Link stype={padding} to="users">Users</Link>
+    <div style={background}>
+      <Link style={padding} to="/">Blogs</Link>
+      <Link style={padding} to="users">Users</Link>
     </div>
   )
 }

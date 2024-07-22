@@ -62,9 +62,9 @@ const App = () => {
   return (
     <div>
 
-      <Menu />
-
       <Notification />
+
+      <Menu />
 
       <div style={{ display: user === null ? '' : 'none' }}>
         <Toggleable
@@ -77,7 +77,6 @@ const App = () => {
           />
         </Toggleable>
       </div>
-
 
       {user !== null
         ? <div>{`${user.name} logged in`}
