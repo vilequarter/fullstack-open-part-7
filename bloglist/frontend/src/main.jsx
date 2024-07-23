@@ -4,6 +4,7 @@ import './services/index.css'
 import { Provider } from 'react-redux'
 import store from './reducers/store'
 import { BrowserRouter as Router } from 'react-router-dom'
+import 'semantic-ui-css/semantic.min.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>

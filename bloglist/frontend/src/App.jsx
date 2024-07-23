@@ -9,7 +9,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import Blog from './components/Blog'
 import { resetLoggedUser, setLoggedUser } from './reducers/loggedUserReducer'
-import Menu from './components/Menu'
+import Header from './components/Header'
 import { Route, Routes, useMatch } from 'react-router-dom'
 import Users from './components/users'
 import User from './components/User'
@@ -61,10 +61,9 @@ const App = () => {
 
   return (
     <div>
+      <Header logout={handleLogout}/>
 
       <Notification />
-
-      <Menu />
 
       <div style={{ display: user === null ? '' : 'none' }}>
         <Toggleable
@@ -78,20 +77,13 @@ const App = () => {
         </Toggleable>
       </div>
 
-      {user !== null
-        ? <div>{`${user.name} logged in`}
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-        : <></>
-      }
-
       <Routes>
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User user={userDetail}/>} />
         <Route path="/blogs/:id" element={<Blog blog={blogDetail}/>} />
         <Route path="/" element={
           <div>
-            <h2>Blogs</h2>
+            <h2 style={{ paddingLeft: 10 }}>Blogs</h2>
             <Toggleable buttonLabel="add blog" ref={blogFormRef}>
               <CreateBlogForm
                 handleToggle={() => handleToggle(blogFormRef)}

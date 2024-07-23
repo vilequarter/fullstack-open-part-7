@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { Form, FormField, Button } from 'semantic-ui-react'
 
 const CreateBlogForm = ({ handleToggle }) => {
   const [title, setTitle] = useState('')
@@ -26,40 +27,35 @@ const CreateBlogForm = ({ handleToggle }) => {
 
   return(
     <>
-      <h2>Create new blog</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          Title:
+      <h3>Create new blog</h3>
+
+      <Form onSubmit={addBlog}>
+        <FormField width={4}>
+          <label>Title</label>
           <input
-            type="text"
+            placeholder='title'
             value={title}
-            name="Title"
             onChange={({ target }) => setTitle(target.value)}
-            id="titleInput"
           />
-        </div>
-        <div>
-          Author:
+        </FormField>
+        <FormField width={4}>
+          <label>Author</label>
           <input
-            type="text"
+            placeholder='author'
             value={author}
-            name="Author"
             onChange={({ target }) => setAuthor(target.value)}
-            id="authorInput"
           />
-        </div>
-        <div>
-          Url:
+        </FormField>
+        <FormField width={4}>
+          <label>Url</label>
           <input
-            type="text"
+            placeholder='url'
             value={url}
-            name="Url"
             onChange={({ target }) => setUrl(target.value)}
-            id="urlInput"
           />
-        </div>
-        <button type="submit">Create</button>
-      </form>
+        </FormField>
+        <Button primary type="submit">Create</Button>
+      </Form>
     </>
   )
 }

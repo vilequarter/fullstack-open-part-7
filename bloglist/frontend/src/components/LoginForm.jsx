@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/loggedUserReducer'
+import { Button, Form, FormField, Header } from 'semantic-ui-react'
 
 const LoginForm = ({ handleToggle }) => {
   const [username, setUsername] = useState('')
@@ -19,30 +20,29 @@ const LoginForm = ({ handleToggle }) => {
   }
 
   return(
-    <>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username:
+    <div>
+      <Header as='h2'>Log in to application</Header>
+      <Form onSubmit={handleLogin} size='small'>
+        <FormField width={4}>
+          <label>username</label>
           <input
-            type="text"
+            placeholder='username'
             value={username}
-            name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password:
+        </FormField>
+        <FormField width={4}>
+          <label>password</label>
           <input
-            type="password"
+            type='password'
+            placeholder='password'
             value={password}
-            name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
+        </FormField>
+        <Button primary type="submit">login</Button>
+      </Form>
+    </div>
   )
 }
 

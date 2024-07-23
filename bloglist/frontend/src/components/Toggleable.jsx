@@ -1,5 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from 'semantic-ui-react'
 
 const Toggleable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(props.default)
@@ -18,17 +19,17 @@ const Toggleable = forwardRef((props, refs) => {
   })
 
   return (
-    <>
+    <div style={{ paddingLeft: 10 }}>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>
+        <Button onClick={toggleVisibility}>
           {props.buttonLabel}
-        </button>
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <Button onClick={toggleVisibility} secondary>cancel</Button>
       </div>
-    </>
+    </div>
   )
 })
 
